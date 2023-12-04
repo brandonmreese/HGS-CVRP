@@ -35,8 +35,8 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 	for (Individual * myIndividual2 : subpop)
 	{
 		double myDistance = brokenPairsDistance(*myIndividual,*myIndividual2);
-		myIndividual2->indivsPerProximity.insert({ myDistance, myIndividual });
-		myIndividual->indivsPerProximity.insert({ myDistance, myIndividual2 });
+		myIndividual2->proximities.insert(myDistance);
+		myIndividual->proximities.insert(myDistance);
 	}
 
 	// Identify the correct location in the subpopulation and insert the individual
@@ -68,12 +68,12 @@ void Population::updateBiasedFitnesses(SubPopulation & pop)
 {
 	// Ranking the individuals based on their diversity contribution (decreasing order of distance)
 	std::vector <std::pair <double, int> > ranking;
-	for (int i = 0 ; i < (int)pop.size(); i++) 
+	for (int i = 0 ; i < (int)pop.size(); i++)
 		ranking.push_back({-averageBrokenPairsDistanceClosest(*pop[i],params.ap.nbClose),i});
 	std::sort(ranking.begin(), ranking.end());
 
 	// Updating the biased fitness values
-	if (pop.size() == 1) 
+	if (pop.size() == 1)
 		pop[0]->biasedFitness = 0;
 	else
 	{
@@ -83,7 +83,7 @@ void Population::updateBiasedFitnesses(SubPopulation & pop)
 			double fitRank = (double)ranking[i].second / (double)(pop.size() - 1);
 			if ((int)pop.size() <= params.ap.nbElite) // Elite individuals cannot be smaller than population size
 				pop[ranking[i].second]->biasedFitness = fitRank;
-			else 
+			else
 				pop[ranking[i].second]->biasedFitness = fitRank + (1.0 - (double)params.ap.nbElite / (double)pop.size()) * divRank;
 		}
 	}
@@ -111,18 +111,16 @@ void Population::removeWorstBiasedFitness(SubPopulation & pop)
 	}
 
 	// Removing the individual from the population and freeing memory
-	pop.erase(pop.begin() + worstIndividualPosition); 
+	pop.erase(pop.begin() + worstIndividualPosition);
 
 	// Cleaning its distances from the other individuals in the population
 	for (Individual * indiv2 : pop)
 	{
-		auto it = indiv2->indivsPerProximity.begin();
-		while (it->second != worstIndividual) ++it;
-		indiv2->indivsPerProximity.erase(it);
+		indiv2->proximities.erase(indiv2->proximityPerIndividual[worstIndividual]);
 	}
 
 	// Freeing memory
-	delete worstIndividual; 
+	delete worstIndividual;
 }
 
 void Population::restart()
@@ -181,12 +179,12 @@ const Individual & Population::getBinaryTournament ()
 	int place2 = distr(params.ran);
 	Individual * indiv1 = (place1 >= (int)feasibleSubpop.size()) ? infeasibleSubpop[place1 - feasibleSubpop.size()] : feasibleSubpop[place1];
 	Individual * indiv2 = (place2 >= (int)feasibleSubpop.size()) ? infeasibleSubpop[place2 - feasibleSubpop.size()] : feasibleSubpop[place2];
-	
+
 	// Keeping the best of the two in terms of biased fitness
 	updateBiasedFitnesses(feasibleSubpop);
 	updateBiasedFitnesses(infeasibleSubpop);
 	if (indiv1->biasedFitness < indiv2->biasedFitness) return *indiv1 ;
-	else return *indiv2 ;		
+	else return *indiv2 ;
 }
 
 const Individual * Population::getBestFeasible ()
@@ -240,11 +238,11 @@ double Population::brokenPairsDistance(const Individual & indiv1, const Individu
 double Population::averageBrokenPairsDistanceClosest(const Individual & indiv, int nbClosest)
 {
 	double result = 0.;
-	int maxSize = std::min<int>(nbClosest, indiv.indivsPerProximity.size());
-	auto it = indiv.indivsPerProximity.begin();
+	int maxSize = std::min<int>(nbClosest, indiv.proximities.size());
+	auto it = indiv.proximities.begin();
 	for (int i = 0; i < maxSize; i++)
 	{
-		result += it->first;
+		result += *it;
 		++it;
 	}
 	return result / (double)maxSize;

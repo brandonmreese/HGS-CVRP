@@ -44,7 +44,8 @@ public:
   std::vector < std::vector <int> > chromR ;								// For each vehicle, the associated sequence of deliveries (complete solution)
   std::vector < int > successors ;											// For each node, the successor in the solution (can be the depot 0)
   std::vector < int > predecessors ;										// For each node, the predecessor in the solution (can be the depot 0)
-  std::multiset < std::pair < double, Individual* > > indivsPerProximity ;	// The other individuals in the population, ordered by increasing proximity (the set container follows a natural ordering based on the first value of the pair)
+  std::multiset<double> proximities; // The proximities of other individuals in the population (can not be the depot 0), ordered by increasing proximity (the set container follows a natural ordering based on the value of the first pair)
+  std::unordered_map<Individual*,double> proximityPerIndividual;
   double biasedFitness;														// Biased fitness of the solution
 
   // Measuring cost and feasibility of an Individual from the information of chromR (needs chromR filled and access to Params)
