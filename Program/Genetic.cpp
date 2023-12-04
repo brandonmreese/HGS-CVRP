@@ -1,7 +1,7 @@
 #include "Genetic.h"
 
 void Genetic::run()
-{	
+{
 	/* INITIAL POPULATION */
 	population.generatePopulation();
 
@@ -9,7 +9,7 @@ void Genetic::run()
 	int nbIterNonProd = 1;
 	if (params.verbose) std::cout << "----- STARTING GENETIC ALGORITHM" << std::endl;
 	for (nbIter = 0 ; nbIterNonProd <= params.ap.nbIter && (params.ap.timeLimit == 0 || (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC < params.ap.timeLimit) ; nbIter++)
-	{	
+	{
 		/* SELECTION AND CROSSOVER */
 		crossoverOX(offspring, population.getBinaryTournament(),population.getBinaryTournament());
 
@@ -55,21 +55,29 @@ void Genetic::crossoverOX(Individual & result, const Individual & parent1, const
 
 	// Copy from start to end
 	int j = start;
-	while (j % params.nbClients != (end + 1) % params.nbClients)
+	int k;
+	int end_ = (end + 1) % params.nbClients;
+	while (j != end_)
 	{
-		result.chromT[j % params.nbClients] = parent1.chromT[j % params.nbClients];
-		freqClient[result.chromT[j % params.nbClients]] = true;
+		result.chromT[j] = parent1.chromT[j];
+		freqClient[result.chromT[j]] = true;
 		j++;
+		if (j == params.nbClients ) j = 0;
 	}
 
+	k = end_ >= start ? end_ - start : end_ - start + params.nbClients;
+
 	// Fill the remaining elements in the order given by the second parent
-	for (int i = 1; i <= params.nbClients; i++)
+	for (int i = end + 1; k < params.nbClients; i++)
 	{
-		int temp = parent2.chromT[(end + i) % params.nbClients];
+		if (i == params.nbClients ) i = 0;
+		int temp = parent2.chromT[i];
 		if (freqClient[temp] == false)
 		{
-			result.chromT[j % params.nbClients] = temp;
+			result.chromT[j] = temp;
 			j++;
+			k++;
+			if (j == params.nbClients ) j = 0;
 		}
 	}
 
@@ -77,8 +85,8 @@ void Genetic::crossoverOX(Individual & result, const Individual & parent1, const
 	split.generalSplit(result, parent1.eval.nbRoutes);
 }
 
-Genetic::Genetic(Params & params) : 
-	params(params), 
+Genetic::Genetic(Params & params) :
+	params(params),
 	split(params),
 	localSearch(params),
 	population(params,this->split,this->localSearch),
