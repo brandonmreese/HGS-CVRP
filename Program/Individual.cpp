@@ -1,4 +1,4 @@
-#include "Individual.h" 
+#include "Individual.h"
 
 void Individual::evaluateCompleteCost(const Params & params)
 {
@@ -40,7 +40,7 @@ Individual::Individual(Params & params)
 	chromT = std::vector <int>(params.nbClients);
 	for (int i = 0; i < params.nbClients; i++) chromT[i] = i + 1;
 	std::shuffle(chromT.begin(), chromT.end(), params.ran);
-	eval.penalizedCost = 1.e30;	
+	eval.penalizedCost = 1.e30;
 }
 
 Individual::Individual(Params & params, std::string fileName) : Individual(params)
@@ -76,6 +76,6 @@ Individual::Individual(Params & params, std::string fileName) : Individual(param
 		if (eval.penalizedCost != readCost)throw std::string("Input solution has a different cost than announced in the file");
 		if (params.verbose) std::cout << "----- INPUT SOLUTION HAS BEEN SUCCESSFULLY READ WITH COST " << eval.penalizedCost << std::endl;
 	}
-	else 
+	else
 		throw std::string("Impossible to open solution file provided in input in : " + fileName);
 }

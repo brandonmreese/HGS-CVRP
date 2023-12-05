@@ -30,7 +30,7 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 	// Find the adequate subpopulation in relation to the individual feasibility
 	SubPopulation & subpop = (indiv.eval.isFeasible) ? feasibleSubpop : infeasibleSubpop;
 
-	// Create a copy of the individual and updade the proximity structures calculating inter-individual distances
+	// Create a copy of the individual and update the proximity structures calculating inter-individual distances
 	Individual * myIndividual = new Individual(indiv);
 	for (Individual * myIndividual2 : subpop)
 	{
@@ -118,7 +118,9 @@ void Population::removeWorstBiasedFitness(SubPopulation & pop)
 	// Cleaning its distances from the other individuals in the population
 	for (Individual * indiv2 : pop)
 	{
-		indiv2->proximities.erase(indiv2->proximityPerIndividual[worstIndividual]);
+		auto it = indiv2->proximities.find(indiv2->proximityPerIndividual[worstIndividual]);
+		indiv2->proximities.erase(it);
+		indiv2->proximityPerIndividual.erase(worstIndividual);
 	}
 
 	// Freeing memory
