@@ -98,6 +98,9 @@ class Population
    // Exports an Individual in CVRPLib format
    void exportCVRPLibFormat(const Individual & indiv, std::string fileName);
 
+	// Prints a solution in CVRPLib format (adds a final line with the computational time)
+	void printCVRPLibFormat(const Individual & indiv);
+
    // Constructor
    Population(Params & params, Split & split, LocalSearch & localSearch);
 

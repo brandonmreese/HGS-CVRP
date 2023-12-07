@@ -59,6 +59,15 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 		{
 			bestSolutionOverall = indiv;
 			searchProgress.push_back({ clock() - params.startTime , bestSolutionOverall.eval.penalizedCost });
+			if (params.ap.isDimacsRun){
+				// Since the controller may kill the script at any time, directly write output
+				// bestSolutionOverall.exportCVRPLibFormat(params->config.pathSolution);
+				// exportSearchProgress(params->config.pathSolution + ".PG.csv", params->config.pathInstance, params->config.seed);
+
+				// Print solution for processing by the controller (after output is written since controller may terminate program!)
+				// Note: delay for writing is negligible
+				printCVRPLibFormat(bestSolutionOverall);
+			}
 		}
 		return true;
 	}
@@ -294,6 +303,26 @@ void Population::exportCVRPLibFormat(const Individual & indiv, std::string fileN
 		myfile << "Cost " << indiv.eval.penalizedCost << std::endl;
 	}
 	else std::cout << "----- IMPOSSIBLE TO OPEN: " << fileName << std::endl;
+}
+
+void Population::printCVRPLibFormat(const Individual & indiv)
+{
+	std::cout << "----- PRINTING SOLUTION WITH VALUE " << indiv.eval.penalizedCost << std::endl;
+	for (int k = 0; k < params.nbVehicles; k++)
+	{
+		if (!indiv.chromR[k].empty())
+		{
+			std::cout << "Route #" << k + 1 << ":"; // Route IDs start at 1 in the file format
+			for (int i : indiv.chromR[k])
+			{
+				std::cout << " " << i;
+			}
+			std::cout << std::endl;
+		}
+	}
+	std::cout << "Cost " << indiv.eval.penalizedCost << std::endl;
+	std::cout << "Time " << params.getTimeElapsedSeconds() << std::endl;
+	fflush(stdout);
 }
 
 Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch), bestSolutionRestart(params), bestSolutionOverall(params)

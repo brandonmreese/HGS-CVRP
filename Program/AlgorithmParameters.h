@@ -24,6 +24,7 @@ struct AlgorithmParameters {
 	int nbIterTraces;       // Number of iterations between traces display during HGS execution
 	double timeLimit;		// CPU time limit until termination in seconds. Default value: 0 (i.e., inactive)
 	int useSwapStar;		// Use SWAP* local search or not. Default value: 1. Only available when coordinates are provided.
+	bool isDimacsRun = false;// If DIMACS run, print incumbent and avoid other output
 };
 
 #ifdef __cplusplus

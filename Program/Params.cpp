@@ -63,7 +63,7 @@ Params::Params(
 	if (nbVehicles == INT_MAX)
 	{
 		nbVehicles = (int)std::ceil(1.3*totalDemand/vehicleCapacity) + 3;  // Safety margin: 30% + 3 more vehicles than the trivial bin packing LB
-		if (verbose) 
+		if (verbose)
 			std::cout << "----- FLEET SIZE WAS NOT SPECIFIED: DEFAULT INITIALIZATION TO " << nbVehicles << " VEHICLES" << std::endl;
 	}
 	else
@@ -120,4 +120,7 @@ Params::Params(
 		std::cout << "----- INSTANCE SUCCESSFULLY LOADED WITH " << nbClients << " CLIENTS AND " << nbVehicles << " VEHICLES" << std::endl;
 }
 
+double Params::getTimeElapsedSeconds(){
+	return (clock() - startTime) / (double)CLOCKS_PER_SEC;
+}
 

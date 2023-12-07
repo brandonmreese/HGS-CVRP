@@ -85,6 +85,8 @@ public:
 					ap.penaltyIncrease = atof(argv[i+1]);
 				else if (std::string(argv[i]) == "-penaltyDecrease")
 					ap.penaltyDecrease = atof(argv[i+1]);
+				else if (std::string(argv[i]) == "-isDimacsRun")
+					ap.isDimacsRun = atoi(argv[i + 1]) != 0;
 				else
 				{
 					std::cout << "----- ARGUMENT NOT RECOGNIZED: " << std::string(argv[i]) << std::endl;
@@ -118,6 +120,9 @@ public:
 		std::cout << "[-targetFeasible <double>] target ratio of feasible individuals between penalty updates. Defaults to 0.2                        " << std::endl;
 		std::cout << "[-penaltyIncrease <double>] penalty increase if insufficient feasible individuals between penalty updates. Defaults to 1.2      " << std::endl;
 		std::cout << "[-penaltyDecrease <double>] penalty decrease if sufficient feasible individuals between penalty updates. Defaults to 0.85       " << std::endl;
+		std::cout << "[-isDimacsRun <bool>] sets when DIMACS instance is run: print incumbent and avoid other output. It can be 0 or 1.               " << std::endl;
+		std::cout << "                      Defaults to 0                                                                                             " << std::endl;
+
 		std::cout << "--------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 		std::cout << std::endl;
 	};
