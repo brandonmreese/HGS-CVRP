@@ -20,7 +20,8 @@ Params::Params(
 	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), verbose(verbose)
 {
 	// This marks the starting time of the algorithm
-	startTime = clock();
+	startWallClockTime = std::chrono::system_clock::now();
+	startCPUTime = std::clock();
 
 	nbClients = (int)demands.size() - 1; // Need to substract the depot from the number of nodes
 	totalDemand = 0.;
@@ -121,6 +122,11 @@ Params::Params(
 }
 
 double Params::getTimeElapsedSeconds(){
-	return (clock() - startTime) / (double)CLOCKS_PER_SEC;
+	if (ap.useWallClockTime)
+	{
+		std::chrono::duration<double> wctduration = (std::chrono::system_clock::now() - startWallClockTime);
+		return wctduration.count();
+	}
+	return (std::clock() - startCPUTime) / (double)CLOCKS_PER_SEC;
 }
 

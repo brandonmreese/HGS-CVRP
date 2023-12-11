@@ -3,7 +3,7 @@
 void Population::generatePopulation()
 {
 	if (params.verbose) std::cout << "----- BUILDING INITIAL POPULATION" << std::endl;
-	for (int i = 0; i < 4*params.ap.mu && (i == 0 || params.ap.timeLimit == 0 || (double)(clock() - params.startTime) / (double)CLOCKS_PER_SEC < params.ap.timeLimit) ; i++)
+	for (int i = 0; i < 4*params.ap.mu && (i == 0 || params.ap.timeLimit == 0 || params.getTimeElapsedSeconds() < params.ap.timeLimit) ; i++)
 	{
 		Individual randomIndiv(params);
 		split.generalSplit(randomIndiv, params.nbVehicles);
@@ -58,7 +58,7 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 		if (indiv.eval.penalizedCost < bestSolutionOverall.eval.penalizedCost - MY_EPSILON)
 		{
 			bestSolutionOverall = indiv;
-			searchProgress.push_back({ clock() - params.startTime , bestSolutionOverall.eval.penalizedCost });
+			searchProgress.push_back({ params.getTimeElapsedSeconds() , bestSolutionOverall.eval.penalizedCost });
 			if (params.ap.isDimacsRun){
 				// Since the controller may kill the script at any time, directly write output
 				// bestSolutionOverall.exportCVRPLibFormat(params->config.pathSolution);
@@ -222,7 +222,7 @@ void Population::printState(int nbIter, int nbIterNoImprovement)
 {
 	if (params.verbose)
 	{
-		std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC);
+		std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, params.getTimeElapsedSeconds());
 
 		if (getBestFeasible() != NULL) std::printf(" | Feas %zu %.2f %.2f", feasibleSubpop.size(), getBestFeasible()->eval.penalizedCost, getAverageCost(feasibleSubpop));
 		else std::printf(" | NO-FEASIBLE");
@@ -282,8 +282,8 @@ double Population::getAverageCost(const SubPopulation & pop)
 void Population::exportSearchProgress(std::string fileName, std::string instanceName)
 {
 	std::ofstream myfile(fileName);
-	for (std::pair<clock_t, double> state : searchProgress)
-		myfile << instanceName << ";" << params.ap.seed << ";" << state.second << ";" << (double)state.first / (double)CLOCKS_PER_SEC << std::endl;
+	for (std::pair<double, double> state : searchProgress)
+		myfile << instanceName << ";" << params.ap.seed << ";" << state.second << ";" << state.first << std::endl;
 }
 
 void Population::exportCVRPLibFormat(const Individual & indiv, std::string fileName)

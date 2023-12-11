@@ -55,6 +55,8 @@ public:
 			{
 				if (std::string(argv[i]) == "-t")
 					ap.timeLimit = atof(argv[i+1]);
+				else if (std::string(argv[i]) == "-useWallClockTime")
+					ap.useWallClockTime = atoi(argv[i + 1]) != 0;
 				else if (std::string(argv[i]) == "-it")
 					ap.nbIter  = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-seed")

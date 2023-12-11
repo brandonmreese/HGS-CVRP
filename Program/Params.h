@@ -33,7 +33,8 @@ SOFTWARE.*/
 #include <iostream>
 #include <sstream>
 #include <cmath>
-#include <time.h>
+#include <ctime>
+#include <chrono>
 #include <climits>
 #include <algorithm>
 #include <unordered_set>
@@ -63,7 +64,8 @@ public:
 	double penaltyDuration;				// Penalty for one unit of duration excess (adapted through the search)
 
 	/* START TIME OF THE ALGORITHM */
-	clock_t startTime;                  // Start time of the optimization (set when Params is constructed)
+	std::chrono::system_clock::time_point startWallClockTime;			// Start wall clock time of this object (should be constructed at start of program)
+	std::clock_t startCPUTime;			// Start CPU time of this object
 
 	/* RANDOM NUMBER GENERATOR */
 	std::minstd_rand ran;               // Using the fastest and simplest LCG. The quality of random numbers is not critical for the LS, but speed is

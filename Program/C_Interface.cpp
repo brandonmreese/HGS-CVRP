@@ -15,7 +15,7 @@ Solution *prepare_solution(Population &population, Params &params)
 {
 	// Preparing the best solution
 	Solution *sol = new Solution;
-	sol->time = (double)(clock() - params.startTime) / (double)CLOCKS_PER_SEC;
+	sol->time = params.getTimeElapsedSeconds();
 
 	if (population.getBestFound() != nullptr) {
 		// Best individual
@@ -113,7 +113,7 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 		}
 
 		Params params(x_coords,y_coords,distance_matrix,service_time,demands,vehicleCapacity,durationLimit,max_nbVeh,isDurationConstraint,verbose,*ap);
-		
+
 		// Running HGS and returning the result
 		Genetic solver(params);
 		solver.run();
