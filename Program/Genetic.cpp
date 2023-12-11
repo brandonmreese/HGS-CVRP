@@ -22,6 +22,11 @@ void Genetic::run()
 			if (offspring.eval.isFeasible) isNewBest = (population.addIndividual(offspring,false) || isNewBest);
 		}
 
+		// std::cout << offspring.eval.penalizedCost << "<=" << params.ap.objectiveTarget << std::endl;
+		if (isNewBest && offspring.eval.penalizedCost <= params.ap.objectiveTarget){
+			break;
+		}
+
 		/* TRACKING THE NUMBER OF ITERATIONS SINCE LAST SOLUTION IMPROVEMENT */
 		if (isNewBest) nbIterNonProd = 1;
 		else nbIterNonProd ++ ;

@@ -89,6 +89,8 @@ public:
 					ap.penaltyDecrease = atof(argv[i+1]);
 				else if (std::string(argv[i]) == "-isDimacsRun")
 					ap.isDimacsRun = atoi(argv[i + 1]) != 0;
+				else if (std::string(argv[i]) == "-objectiveTarget")
+					ap.objectiveTarget = atof(argv[i+1]);
 				else
 				{
 					std::cout << "----- ARGUMENT NOT RECOGNIZED: " << std::string(argv[i]) << std::endl;
@@ -124,6 +126,7 @@ public:
 		std::cout << "[-penaltyDecrease <double>] penalty decrease if sufficient feasible individuals between penalty updates. Defaults to 0.85       " << std::endl;
 		std::cout << "[-isDimacsRun <bool>] sets when DIMACS instance is run: print incumbent and avoid other output. It can be 0 or 1.               " << std::endl;
 		std::cout << "                      Defaults to 0                                                                                             " << std::endl;
+		std::cout << "[-objectiveTarget <double>] target objective value for early termination. If specified, will terminate after reaching this value" << std::endl;
 
 		std::cout << "--------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 		std::cout << std::endl;

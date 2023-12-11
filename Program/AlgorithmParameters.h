@@ -26,6 +26,7 @@ struct AlgorithmParameters {
 	bool useWallClockTime = false;  // If True, measure wall clock time rather than CPU time
 	int useSwapStar;		// Use SWAP* local search or not. Default value: 1. Only available when coordinates are provided.
 	bool isDimacsRun = false;// If DIMACS run, print incumbent and avoid other output
+	double objectiveTarget; // Target objective value for early termination. Default value: 0 (i.e., no early termination)
 };
 
 #ifdef __cplusplus
